@@ -65,11 +65,15 @@ document.addEventListener("DOMContentLoaded", function () {
         conflictNotification.style.display = 'none';
     }
 
-    // Display quotes on the page
-    function displayQuotes(filteredQuotes) {
-        quoteDisplay.innerHTML = filteredQuotes.length
-            ? filteredQuotes.map(quote => `<p>"${quote.text}"<br><strong>Category:</strong> ${quote.category}</p>`).join("")
-            : "<p>No quotes found for this category.</p>";
+    // Display a random quote
+    function showRandomQuote() {
+        if (quotes.length > 0) {
+            const randomIndex = Math.floor(Math.random() * quotes.length);
+            const randomQuote = quotes[randomIndex];
+            quoteDisplay.innerHTML = `"${randomQuote.text}"<br><strong>Category:</strong> ${randomQuote.category}`;
+        } else {
+            quoteDisplay.innerHTML = "<p>No quotes available. Add some!</p>";
+        }
     }
 
     // Add new quote and update localStorage
@@ -95,10 +99,55 @@ document.addEventListener("DOMContentLoaded", function () {
         alert("Quote added successfully!");
     }
 
+    // Display quotes based on selected category
+    function displayQuotes(filteredQuotes) {
+        quoteDisplay.innerHTML = filteredQuotes.length
+            ? filteredQuotes.map(quote => `<p>"${quote.text}"<br><strong>Category:</strong> ${quote.category}</p>`).join("")
+            : "<p>No quotes found for this category.</p>";
+    }
+
+    // Populate category filter dropdown
+    function populateCategories() {
+        const categories = [...new Set(quotes.map(quote => quote.category))];
+        categoryFilter.innerHTML = `<option value="all">All Categories</option>` + 
+                                    categories.map(category => `<option value="${category}">${category}</option>`).join("");
+    }
+
+    // Filter quotes based on selected category
+    function filterQuotes() {
+        const selectedCategory = categoryFilter.value;
+        const filteredQuotes = selectedCategory === "all" 
+            ? quotes 
+            : quotes.filter(quote => quote.category === selectedCategory);
+        displayQuotes(filteredQuotes);
+    }
+
+    // Export quotes as JSON
+    function exportQuotes() {
+        const blob = new Blob([JSON.stringify(quotes)], { type: 'application/json' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'quotes.json';
+        link.click();
+    }
+
+    // Import quotes from JSON file
+    function importFromJsonFile(event) {
+        const fileReader = new FileReader();
+        fileReader.onload = function(e) {
+            const importedQuotes = JSON.parse(e.target.result);
+            quotes.push(...importedQuotes);
+            saveQuotes();
+            alert('Quotes imported successfully!');
+        };
+        fileReader.readAsText(event.target.files[0]);
+    }
+
     // Event listeners
     addQuoteBtn.addEventListener("click", addQuote);
     exportBtn.addEventListener("click", exportQuotes);
     importFileInput.addEventListener("change", importFromJsonFile);
+    newQuoteButton.addEventListener("click", showRandomQuote);
 
     // Fetch and sync quotes with the server every 10 seconds (for demo)
     setInterval(syncQuotes, 10000);
