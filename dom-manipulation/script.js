@@ -143,6 +143,30 @@ document.addEventListener("DOMContentLoaded", function () {
         fileReader.readAsText(event.target.files[0]);
     }
 
+    // Create the add quote form
+    function createAddQuoteForm() {
+        const form = document.createElement("div");
+        const quoteInput = document.createElement("input");
+        quoteInput.id = "newQuoteText";
+        quoteInput.type = "text";
+        quoteInput.placeholder = "Enter a new quote";
+        form.appendChild(quoteInput);
+
+        const categoryInput = document.createElement("input");
+        categoryInput.id = "newQuoteCategory";
+        categoryInput.type = "text";
+        categoryInput.placeholder = "Enter quote category";
+        form.appendChild(categoryInput);
+
+        const addButton = document.createElement("button");
+        addButton.textContent = "Add Quote";
+        addButton.addEventListener("click", addQuote);
+        form.appendChild(addButton);
+
+        // Append form to the body or a specific element
+        document.body.appendChild(form);
+    }
+
     // Event listeners
     addQuoteBtn.addEventListener("click", addQuote);
     exportBtn.addEventListener("click", exportQuotes);
@@ -155,4 +179,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Initialize page with existing quotes and filtering
     displayQuotes(quotes);
     populateCategories();
+
+    // Create the add quote form on page load
+    createAddQuoteForm();
 });
