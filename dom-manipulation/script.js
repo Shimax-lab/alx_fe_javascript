@@ -20,8 +20,8 @@ document.addEventListener("DOMContentLoaded", function () {
     // Simulate server API endpoint URL
     const serverUrl = "https://jsonplaceholder.typicode.com/posts";  // Using a mock URL for this example
 
-    // Function to simulate fetching data from a server
-    function fetchServerQuotes() {
+    // Function to simulate fetching quotes from the server
+    function fetchQuotesFromServer() {
         return new Promise((resolve) => {
             // Simulating a delay as if fetching from a real server
             setTimeout(() => {
@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Sync local quotes with server data
     async function syncQuotes() {
-        const serverQuotes = await fetchServerQuotes();
+        const serverQuotes = await fetchQuotesFromServer();
         // Compare and merge server and local quotes
         if (JSON.stringify(quotes) !== JSON.stringify(serverQuotes)) {
             // If quotes are different, show conflict notification
@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function resolveConflict(refresh) {
         if (refresh) {
             // Refresh quotes with server data
-            quotes = fetchServerQuotes(); // Overwrite local quotes with server quotes
+            quotes = fetchQuotesFromServer(); // Overwrite local quotes with server quotes
             saveQuotes();
             alert("Data refreshed from server.");
         } else {
