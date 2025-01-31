@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const importFileInput = document.getElementById("importFile");
     const newQuoteButton = document.getElementById("newQuote");
     const conflictNotification = document.getElementById("conflictNotification");
+    const syncNotification = document.getElementById("syncNotification");  // Added notification for sync
 
     // Simulate server API endpoint URL
     const serverUrl = "https://jsonplaceholder.typicode.com/posts";  // Using a mock URL for this example
@@ -55,6 +56,10 @@ document.addEventListener("DOMContentLoaded", function () {
             conflictNotification.style.display = 'block';
         } else {
             console.log("No conflicts, data is already in sync.");
+            syncNotification.style.display = 'block';  // Show sync success message
+            setTimeout(() => {
+                syncNotification.style.display = 'none';  // Hide after a few seconds
+            }, 3000);
         }
     }
 
