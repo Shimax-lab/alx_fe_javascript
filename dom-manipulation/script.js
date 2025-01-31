@@ -21,17 +21,25 @@ document.addEventListener("DOMContentLoaded", function () {
     const serverUrl = "https://jsonplaceholder.typicode.com/posts";  // Using a mock URL for this example
 
     // Function to simulate fetching quotes from the server
-    function fetchQuotesFromServer() {
-        return new Promise((resolve) => {
-            // Simulating a delay as if fetching from a real server
-            setTimeout(() => {
-                const serverData = [
-                    { text: "New quote from server!", category: "Server" },
-                    { text: "Another server quote.", category: "Server" }
-                ];
-                resolve(serverData);
-            }, 2000);
-        });
+    async function fetchQuotesFromServer() {
+        try {
+            const response = await fetch(serverUrl, {
+                method: "GET", // Using GET to fetch quotes (you can change to POST if needed)
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to fetch quotes from the server");
+            }
+
+            const serverData = await response.json();
+            return serverData;  // This is the fetched data from the server
+        } catch (error) {
+            console.error("Error fetching quotes from server:", error);
+            return [];  // Return empty array if fetch fails
+        }
     }
 
     // Function to save quotes to localStorage
@@ -42,7 +50,6 @@ document.addEventListener("DOMContentLoaded", function () {
     // Sync local quotes with server data
     async function syncQuotes() {
         const serverQuotes = await fetchQuotesFromServer();
-        // Compare and merge server and local quotes
         if (JSON.stringify(quotes) !== JSON.stringify(serverQuotes)) {
             // If quotes are different, show conflict notification
             conflictNotification.style.display = 'block';
